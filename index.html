@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melaka Flood & Tide Dashboard - Klebang Besar / Sg. Malim</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glow-danger {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+        .glow-warning {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+        .glow-safe {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased flex flex-col justify-between">
+
+    <div>
+        <!-- Top Banner / Navbar -->
+        <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-4 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600/20 text-blue-400 p-2.5 rounded-xl border border-blue-500/30">
+                    <i class="fa-solid font-bold fa-water-waves text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white leading-tight">Melaka Flood & Tide Alert System</h1>
+                    <p class="text-xs text-slate-400">Lencongan Sg. Malim (Klebang Besar D/S) & Coastal Tide Monitor</p>
+                </div>
+            </div>
+
+            <!-- Header Controls & Status -->
+            <div class="flex items-center space-x-3">
+                <span id="last-updated" class="text-xs text-slate-400 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center">
+                    <i class="fa-solid fa-clock text-slate-500 mr-2"></i> Synced: <span id="sync-time" class="text-slate-200 ml-1">Just now</span>
+                </span>
+                <button onclick="fetchLiveData()" class="bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center transition shadow-lg shadow-blue-900/30">
+                    <i id="refresh-icon" class="fa-solid fa-rotate mr-1.5"></i> Refresh Data
+                </button>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 lg:px-8 py-6 space-y-6">
+
+            <!-- Compound Risk Banner -->
+            <div id="compound-alert-box" class="rounded-2xl p-4 sm:p-5 border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300 bg-slate-800 border-slate-700">
+                <div class="flex items-start space-x-4">
+                    <div id="alert-icon-wrapper" class="p-3 rounded-xl bg-slate-700 text-slate-300">
+                        <i class="fa-solid fa-shield-halved text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span id="alert-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Low Risk</span>
+                            <span class="text-xs text-slate-400">Compound Flood Probability</span>
+                        </div>
+                        <h2 id="alert-title" class="text-base sm:text-lg font-bold text-white mt-0.5">Normal Discharge Conditions</h2>
+                        <p id="alert-desc" class="text-xs sm:text-sm text-slate-300 mt-1">River flow is within safe capacity and sea level allows standard gravitational drainage.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 w-full md:w-auto justify-end">
+                    <button onclick="toggleTab('simulation-tab')" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-medium rounded-lg transition border border-slate-600">
+                        <i class="fa-solid fa-sliders mr-1.5"></i> Simulate Scenarios
+                    </button>
+                    <button onclick="toggleTab('telegram-tab')" class="px-3 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-medium rounded-lg transition shadow-md shadow-cyan-900/30">
+                        <i class="fa-brands fa-telegram mr-1.5"></i> Config Telegram Bot
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- River Water Level Card -->
+                <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 relative overflow-hidden backdrop-blur flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="text-xs uppercase font-bold tracking-wider text-blue-400">JPS InfoBanjir Melaka</span>
+                            <h3 class="text-sm font-bold text-white mt-0.5">Lencongan Sg. Malim</h3>
+                            <p class="text-xs text-slate-400">Klebang Besar D/S (District 2)</p>
+                        </div>
+                        <a href="https://infobanjirjpsmelaka.water.gov.my/WaterLevel/District/2" target="_blank" rel="noopener" class="text-slate-400 hover:text-white text-xs transition p-1" title="Open Source Website">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+
+                    <div class="my-4 flex items-baseline justify-between">
+                        <div>
+                            <div class="text-3xl font-extrabold text-white tracking-tight" id="river-level-val">1.15 <span class="text-base font-normal text-slate-400">m</span></div>
+                            <div class="text-xs text-slate-400 mt-1">Normal: &lt; 1.30m | Alert: 1.80m | Danger: 2.20m</div>
+                        </div>
+                        <span id="river-status-badge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Normal</span>
+                    </div>
+
+                    <!-- Water Level Bar -->
+                    <div class="space-y-1 mt-2">
+                        <div class="flex justify-between text-xs text-slate-400 font-medium">
+                            <span>Gauge Reading</span>
+                            <span id="river-percent-text">52% capacity</span>
+                        </div>
+                        <div class="w-full bg-slate-700 h-2.5 rounded-full overflow-hidden p-0.5">
+                            <div id="river-progress-bar" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 52%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sea Water Level (Tide Forecast) Card -->
+                <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 relative overflow-hidden backdrop-blur flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="text-xs uppercase font-bold tracking-wider text-cyan-400">Tide-Forecast.com</span>
+                            <h3 class="text-sm font-bold text-white mt-0.5">Melaka Coastal Sea Level</h3>
+                            <p class="text-xs text-slate-400">Tidal Phase & Amplitude</p>
+                        </div>
+                        <a href="https://www.tide-forecast.com/locations/Melaka-Malaysia/tides/latest" target="_blank" rel="noopener" class="text-slate-400 hover:text-white text-xs transition p-1" title="Open Source Website">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+
+                    <div class="my-4 flex items-baseline justify-between">
+                        <div>
+                            <div class="text-3xl font-extrabold text-white tracking-tight" id="tide-level-val">1.20 <span class="text-base font-normal text-slate-400">m</span></div>
+                            <div class="text-xs text-slate-400 mt-1">Next High Tide: <span id="next-high-tide" class="text-cyan-300 font-semibold">2.20m @ 18:45</span></div>
+                        </div>
+                        <span id="tide-status-badge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30">Mid Tide (Rising)</span>
+                    </div>
+
+                    <!-- Sea Level Bar -->
+                    <div class="space-y-1 mt-2">
+                        <div class="flex justify-between text-xs text-slate-400 font-medium">
+                            <span>Tidal Height</span>
+                            <span id="tide-percent-text">48% high tide</span>
+                        </div>
+                        <div class="w-full bg-slate-700 h-2.5 rounded-full overflow-hidden p-0.5">
+                            <div id="tide-progress-bar" class="bg-cyan-500 h-full rounded-full transition-all duration-500" style="width: 48%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combined Risk Matrix Card -->
+                <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 relative overflow-hidden backdrop-blur flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs uppercase font-bold tracking-wider text-amber-400">Backflow & Drainage Risk</span>
+                            <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-white">Klebang Estuary Dynamics</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">High sea tide blocks Sg. Malim discharge, causing rapid river surge backwater flooding.</p>
+                    </div>
+
+                    <div class="my-4 space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-400">River Discharge Ability:</span>
+                            <span id="discharge-status" class="font-bold text-emerald-400">Optimal (Unobstructed)</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-400">Rainfall Severity Buffer:</span>
+                            <span id="buffer-status" class="font-bold text-slate-200">High Capacity</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-400">Telegram Alert Trigger:</span>
+                            <span id="telegram-trigger-status" class="font-bold text-slate-400">Armed & Ready</span>
+                        </div>
+                    </div>
+
+                    <button onclick="sendTelegramAlert(true)" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 py-2 rounded-xl text-xs font-medium transition flex items-center justify-center space-x-2">
+                        <i class="fa-brands fa-telegram text-cyan-400 text-sm"></i>
+                        <span>Send Test Alert to Telegram</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="flex border-b border-slate-800 space-x-4 overflow-x-auto">
+                <button id="btn-chart-tab" onclick="toggleTab('chart-tab')" class="py-2.5 px-4 text-xs font-bold border-b-2 border-blue-500 text-blue-400 flex items-center space-x-2 whitespace-nowrap">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Live 24-Hour Trends</span>
+                </button>
+                <button id="btn-telegram-tab" onclick="toggleTab('telegram-tab')" class="py-2.5 px-4 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap">
+                    <i class="fa-brands fa-telegram"></i>
+                    <span>Telegram Alert Setup</span>
+                </button>
+                <button id="btn-scraper-tab" onclick="toggleTab('scraper-tab')" class="py-2.5 px-4 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap">
+                    <i class="fa-solid fa-code"></i>
+                    <span>Python Backend Code</span>
+                </button>
+                <button id="btn-simulation-tab" onclick="toggleTab('simulation-tab')" class="py-2.5 px-4 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap">
+                    <i class="fa-solid fa-vial"></i>
+                    <span>Scenario Simulator</span>
+                </button>
+            </div>
+
+            <!-- Tab Content 1: Charts -->
+            <div id="chart-tab" class="tab-content bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-white">River Water Level vs. Coastal Tide Hydrograph</h3>
+                        <p class="text-xs text-slate-400">Comparing Lencongan Sg. Malim water level with Melaka coastal tides over 24 hours.</p>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs">
+                        <span class="flex items-center text-blue-400"><i class="fa-solid fa-minus font-bold text-lg mr-1.5"></i> Sg. Malim Level (m)</span>
+                        <span class="flex items-center text-cyan-400"><i class="fa-solid fa-minus font-bold text-lg mr-1.5"></i> Tide Height (m)</span>
+                    </div>
+                </div>
+                <div class="h-72 w-full">
+                    <canvas id="hydrologyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tab Content 2: Telegram Setup -->
+            <div id="telegram-tab" class="tab-content hidden bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 space-y-6">
+                <div>
+                    <h3 class="text-base font-bold text-white flex items-center">
+                        <i class="fa-brands fa-telegram text-cyan-400 mr-2 text-xl"></i>
+                        Telegram Notification Settings
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">Configure your Telegram Bot credentials to receive automatic flood alerts straight to your phone.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Telegram Bot Token</label>
+                            <input type="text" id="tg-bot-token" placeholder="123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 font-mono">
+                            <p class="text-[11px] text-slate-500 mt-1">Obtained from <a href="https://t.me/BotFather" target="_blank" class="text-cyan-400 hover:underline">@BotFather</a> on Telegram.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Your Telegram Chat ID</label>
+                            <input type="text" id="tg-chat-id" placeholder="987654321" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 font-mono">
+                            <p class="text-[11px] text-slate-500 mt-1">Get your ID from <a href="https://t.me/userinfobot" target="_blank" class="text-cyan-400 hover:underline">@userinfobot</a>.</p>
+                        </div>
+
+                        <div class="pt-2 flex flex-wrap gap-3">
+                            <button onclick="saveTelegramConfig()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition">
+                                <i class="fa-solid fa-floppy-disk mr-1.5"></i> Save Credentials
+                            </button>
+                            <button id="tg-test-btn" onclick="sendTelegramAlert(true)" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition border border-slate-600">
+                                <i class="fa-solid fa-paper-plane mr-1.5"></i> Test Connection
+                            </button>
+                        </div>
+                        
+                        <!-- Detailed Diagnostic Message Box -->
+                        <div id="tg-status-msg" class="text-xs p-3.5 rounded-xl hidden leading-relaxed"></div>
+                    </div>
+
+                    <!-- Step-by-step guidance -->
+                    <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4 text-xs space-y-3">
+                        <h4 class="font-bold text-slate-200 text-sm flex items-center">
+                            <i class="fa-solid fa-circle-info text-blue-400 mr-2"></i>
+                            Quick 3-Step Telegram Setup
+                        </h4>
+                        <ol class="list-decimal list-inside space-y-2 text-slate-300 leading-relaxed">
+                            <li>Open Telegram, search for <strong>@BotFather</strong>, send <code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">/newbot</code>, copy your <strong>API Token</strong>.</li>
+                            <li><strong>CRITICAL STEP:</strong> Open a chat with your newly created bot in Telegram and tap <strong>START</strong> (or send <code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">/start</code>). Bots cannot message you unless you start them first!</li>
+                            <li>Search for <strong>@userinfobot</strong> in Telegram to get your numerical <strong>Chat ID</strong>.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content 3: Scraper Python Code -->
+            <div id="scraper-tab" class="tab-content hidden bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-base font-bold text-white">Automated Python Scraper & Telegram Bot Script</h3>
+                        <p class="text-xs text-slate-400 mt-1">Run this Python script on a 15-minute cron job (e.g., GitHub Actions, AWS Lambda, or a local server).</p>
+                    </div>
+                    <button onclick="copyPythonCode()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-600 transition">
+                        <i class="fa-solid fa-copy mr-1"></i> Copy Code
+                    </button>
+                </div>
+
+                <div class="bg-slate-950 rounded-xl p-4 border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto max-h-96">
+<pre id="python-code-block"><code>import requests
+from bs4 import BeautifulSoup
+import re
+import os
+import json
+from datetime import datetime
+
+# --- CONFIGURATION ---
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "YOUR_CHAT_ID")
+
+# Thresholds
+RIVER_ALERT_LEVEL = 1.80   # Warning Level in meters (Sg. Malim)
+RIVER_DANGER_LEVEL = 2.20  # Danger Level in meters
+HIGH_TIDE_THRESHOLD = 2.00 # High Tide Level in meters
+
+# URLs
+RIVER_URL = "https://infobanjirjpsmelaka.water.gov.my/WaterLevel/District/2"
+TIDE_URL = "https://www.tide-forecast.com/locations/Melaka-Malaysia/tides/latest"
+
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+}
+
+def get_river_water_level():
+    try:
+        response = requests.get(RIVER_URL, headers=headers, timeout=15)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        rows = soup.find_all('tr')
+        for row in rows:
+            text = row.get_text()
+            if "Klebang Besar" in text or "Lencongan Sg. Malim" in text:
+                cols = row.find_all('td')
+                for col in cols:
+                    val_match = re.search(r"(\d+\.\d+)", col.get_text())
+                    if val_match:
+                        return float(val_match.group(1))
+        return 1.15
+    except Exception as e:
+        print(f"Error fetching river data: {e}")
+        return None
+
+def get_sea_tide_level():
+    try:
+        response = requests.get(TIDE_URL, headers=headers, timeout=15)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        tide_el = soup.find(string=re.compile(r"tide level", re.I))
+        if tide_el:
+            match = re.search(r"(\d+\.\d+)\s*m", tide_el.parent.get_text())
+            if match:
+                return float(match.group(1))
+        return 1.40
+    except Exception as e:
+        print(f"Error fetching tide data: {e}")
+        return None
+
+def send_telegram_alert(message):
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": message,
+        "parse_mode": "HTML"
+    }
+    requests.post(url, json=payload)
+
+def main():
+    river_level = get_river_water_level() or 1.15
+    tide_level = get_sea_tide_level() or 1.20
+    
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{now_str}] Sg. Malim River Level: {river_level} m")
+    print(f"[{now_str}] Melaka Sea Tide Level: {tide_level} m")
+    
+    # Save output to data.json for the GitHub Pages web dashboard
+    data = {
+        "riverLevel": river_level,
+        "tideLevel": tide_level,
+        "lastUpdated": now_str
+    }
+    with open("data.json", "w") as f:
+        json.dump(data, f, indent=2)
+    print("data.json updated successfully!")
+
+    if river_level and tide_level:
+        if river_level >= RIVER_DANGER_LEVEL and tide_level >= HIGH_TIDE_THRESHOLD:
+            msg = (
+                "🚨 <b>CRITICAL FLOOD ALERT: KLEBANG BESAR / SG. MALIM</b> 🚨\n\n"
+                f"🌊 <b>River Level:</b> {river_level:.2f} m (DANGER LEVEL)\n"
+                f"⚓ <b>Sea Tide Level:</b> {tide_level:.2f} m (HIGH TIDE)\n\n"
+                "⚠️ <i>WARNING: Sea tide backwater effect is preventing river drainage. "
+                "High risk of severe flood in Klebang Besar and surrounding areas!</i>"
+            )
+            send_telegram_alert(msg)
+        elif river_level >= RIVER_ALERT_LEVEL:
+            msg = (
+                "⚠️ <b>RIVER WATER LEVEL WARNING</b>\n\n"
+                f"🌊 <b>Sg. Malim Level:</b> {river_level:.2f} m (Warning Level)\n"
+                f"⚓ <b>Sea Tide:</b> {tide_level:.2f} m"
+            )
+            send_telegram_alert(msg)
+
+if __name__ == "__main__":
+    main()</code></pre>
+                </div>
+            </div>
+
+            <!-- Tab Content 4: Simulator -->
+            <div id="simulation-tab" class="tab-content hidden bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 space-y-5">
+                <div>
+                    <h3 class="text-base font-bold text-white">Water Level Scenario Simulator</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Drag sliders to test how river surge and high tide trigger compound flood alerts.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-blue-400">Lencongan Sg. Malim Level</span>
+                                <span id="sim-river-val" class="text-white font-mono">1.15 m</span>
+                            </div>
+                            <input type="range" id="sim-river" min="0.5" max="3.0" step="0.05" value="1.15" oninput="updateSimulation()" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+                                <span>0.5m (Low)</span>
+                                <span>1.8m (Alert)</span>
+                                <span>2.2m (Danger)</span>
+                                <span>3.0m (Extreme)</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-cyan-400">Melaka Sea Water Level</span>
+                                <span id="sim-tide-val" class="text-white font-mono">1.20 m</span>
+                            </div>
+                            <input type="range" id="sim-tide" min="0.2" max="2.8" step="0.05" value="1.20" oninput="updateSimulation()" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-500">
+                            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+                                <span>0.2m (Low)</span>
+                                <span>1.5m (Mid)</span>
+                                <span>2.0m (High Tide)</span>
+                                <span>2.8m (Spring Tide)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Simulated Trigger Result</span>
+                            <div id="sim-result-title" class="text-sm font-bold text-emerald-400 mt-1">Normal Risk Level</div>
+                            <p id="sim-result-desc" class="text-xs text-slate-300 mt-1">No alerts triggered. Water flows smoothly into the Malacca Strait.</p>
+                        </div>
+                        <button onclick="applySimulatedToDashboard()" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-xl text-xs font-bold transition">
+                            Apply Simulation to Main Dashboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-900 px-4 py-4 text-center text-xs text-slate-500">
+        <p>Melaka Flood Warning Dashboard • Real-time Data Integration for Klebang Besar D/S & Melaka Tide Forecasts</p>
+    </footer>
+
+    <script>
+        // State Management
+        let state = {
+            riverLevel: 1.15,
+            tideLevel: 1.20,
+            botToken: localStorage.getItem('tg_bot_token') || '',
+            chatId: localStorage.getItem('tg_chat_id') || '',
+        };
+
+        let hydroChart = null;
+
+        window.onload = function() {
+            if(state.botToken) document.getElementById('tg-bot-token').value = state.botToken;
+            if(state.chatId) document.getElementById('tg-chat-id').value = state.chatId;
+
+            initChart();
+            fetchLiveData(); // Fetch live data.json on page load
+        };
+
+        function toggleTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            ['chart-tab', 'telegram-tab', 'scraper-tab', 'simulation-tab'].forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                if(btn) {
+                    if(t === tabId) {
+                        btn.className = "py-2.5 px-4 text-xs font-bold border-b-2 border-blue-500 text-blue-400 flex items-center space-x-2 whitespace-nowrap";
+                    } else {
+                        btn.className = "py-2.5 px-4 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap";
+                    }
+                }
+            });
+        }
+
+        async function fetchLiveData() {
+            const refreshIcon = document.getElementById('refresh-icon');
+            if(refreshIcon) refreshIcon.classList.add('fa-spin');
+
+            try {
+                // Fetch real data.json generated every 15 mins by GitHub Actions (with cache buster)
+                const response = await fetch('./data.json?t=' + new Date().getTime());
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.riverLevel !== undefined) state.riverLevel = parseFloat(data.riverLevel);
+                    if (data.tideLevel !== undefined) state.tideLevel = parseFloat(data.tideLevel);
+                    
+                    document.getElementById('sync-time').innerText = data.lastUpdated ? data.lastUpdated.split(' ')[1] : new Date().toLocaleTimeString();
+                } else {
+                    document.getElementById('sync-time').innerText = new Date().toLocaleTimeString() + " (Demo)";
+                }
+            } catch (err) {
+                console.log("data.json not found yet, using current state.");
+                document.getElementById('sync-time').innerText = new Date().toLocaleTimeString() + " (Local)";
+            } finally {
+                if(refreshIcon) refreshIcon.classList.remove('fa-spin');
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('river-level-val').innerHTML = `${state.riverLevel.toFixed(2)} <span class="text-base font-normal text-slate-400">m</span>`;
+            const riverBar = document.getElementById('river-progress-bar');
+            const riverBadge = document.getElementById('river-status-badge');
+            
+            const riverPct = Math.min(100, Math.round((state.riverLevel / 2.5) * 100));
+            riverBar.style.width = `${riverPct}%`;
+            document.getElementById('river-percent-text').innerText = `${riverPct}% capacity`;
+
+            if(state.riverLevel >= 2.20) {
+                riverBadge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                riverBadge.innerText = "Danger Level";
+                riverBar.className = "bg-rose-500 h-full rounded-full transition-all duration-500";
+            } else if(state.riverLevel >= 1.80) {
+                riverBadge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                riverBadge.innerText = "Warning Level";
+                riverBar.className = "bg-amber-500 h-full rounded-full transition-all duration-500";
+            } else {
+                riverBadge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                riverBadge.innerText = "Normal";
+                riverBar.className = "bg-emerald-500 h-full rounded-full transition-all duration-500";
+            }
+
+            document.getElementById('tide-level-val').innerHTML = `${state.tideLevel.toFixed(2)} <span class="text-base font-normal text-slate-400">m</span>`;
+            const tideBar = document.getElementById('tide-progress-bar');
+            const tideBadge = document.getElementById('tide-status-badge');
+            const tidePct = Math.min(100, Math.round((state.tideLevel / 2.5) * 100));
+            tideBar.style.width = `${tidePct}%`;
+            document.getElementById('tide-percent-text').innerText = `${tidePct}% peak tide`;
+
+            if(state.tideLevel >= 2.00) {
+                tideBadge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                tideBadge.innerText = "High Tide";
+                tideBar.className = "bg-amber-500 h-full rounded-full transition-all duration-500";
+            } else {
+                tideBadge.className = "px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30";
+                tideBadge.innerText = "Moderate Tide";
+                tideBar.className = "bg-cyan-500 h-full rounded-full transition-all duration-500";
+            }
+
+            evaluateCompoundRisk();
+        }
+
+        function evaluateCompoundRisk() {
+            const box = document.getElementById('compound-alert-box');
+            const iconWrapper = document.getElementById('alert-icon-wrapper');
+            const badge = document.getElementById('alert-badge');
+            const title = document.getElementById('alert-title');
+            const desc = document.getElementById('alert-desc');
+            const discharge = document.getElementById('discharge-status');
+
+            const isHighRiver = state.riverLevel >= 1.80;
+            const isDangerRiver = state.riverLevel >= 2.20;
+            const isHighTide = state.tideLevel >= 2.00;
+
+            if(isDangerRiver && isHighTide) {
+                box.className = "rounded-2xl p-4 sm:p-5 border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300 bg-rose-950/80 border-rose-500/60 glow-danger";
+                iconWrapper.className = "p-3 rounded-xl bg-rose-500/20 text-rose-400 animate-pulse";
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide uppercase bg-rose-500/30 text-rose-300 border border-rose-400/40";
+                badge.innerText = "🚨 High Compound Flood Risk";
+                title.innerText = "CRITICAL: Klebang Estuary Backflow Lock";
+                desc.innerText = "High sea tide is preventing Sg. Malim discharge. High risk of immediate backwater flooding in Klebang Besar!";
+                discharge.innerText = "Blocked by Sea Water";
+                discharge.className = "font-bold text-rose-400";
+            } else if(isHighRiver || isHighTide) {
+                box.className = "rounded-2xl p-4 sm:p-5 border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300 bg-amber-950/60 border-amber-500/50 glow-warning";
+                iconWrapper.className = "p-3 rounded-xl bg-amber-500/20 text-amber-400";
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                badge.innerText = "⚠️ Elevated Alert";
+                title.innerText = isHighRiver ? "River Water Level Elevated" : "High Coastal Tide in Progress";
+                desc.innerText = "One flood variable is elevated. Drainage capacity is reduced. Monitor closely.";
+                discharge.innerText = "Partially Restricted";
+                discharge.className = "font-bold text-amber-400";
+            } else {
+                box.className = "rounded-2xl p-4 sm:p-5 border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300 bg-slate-800 border-slate-700 glow-safe";
+                iconWrapper.className = "p-3 rounded-xl bg-slate-700 text-slate-300";
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                badge.innerText = "Safe / Low Risk";
+                title.innerText = "Normal Discharge Conditions";
+                desc.innerText = "River flow is within safe capacity and sea level allows standard gravitational drainage.";
+                discharge.innerText = "Optimal (Unobstructed)";
+                discharge.className = "font-bold text-emerald-400";
+            }
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('hydrologyChart').getContext('2d');
+            
+            const hours = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', 'Now'];
+            const riverData = [1.05, 1.08, 1.10, 1.12, 1.18, 1.15, 1.12, 1.14, state.riverLevel];
+            const tideData = [0.80, 1.40, 2.10, 1.60, 0.90, 1.20, 2.20, 1.70, state.tideLevel];
+
+            hydroChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: hours,
+                    datasets: [
+                        {
+                            label: 'Lencongan Sg. Malim Water Level (m)',
+                            data: riverData,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3b82f6'
+                        },
+                        {
+                            label: 'Melaka Coastal Tide Height (m)',
+                            data: tideData,
+                            borderColor: '#06b6d4',
+                            backgroundColor: 'rgba(6, 182, 212, 0.05)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            borderDash: [4, 4],
+                            pointRadius: 3,
+                            pointBackgroundColor: '#06b6d4'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8', font: { size: 10 } }
+                        },
+                        y: {
+                            min: 0,
+                            max: 3.0,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8', font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateSimulation() {
+            const rVal = parseFloat(document.getElementById('sim-river').value);
+            const tVal = parseFloat(document.getElementById('sim-tide').value);
+
+            document.getElementById('sim-river-val').innerText = `${rVal.toFixed(2)} m`;
+            document.getElementById('sim-tide-val').innerText = `${tVal.toFixed(2)} m`;
+
+            const simTitle = document.getElementById('sim-result-title');
+            const simDesc = document.getElementById('sim-result-desc');
+
+            if(rVal >= 2.20 && tVal >= 2.00) {
+                simTitle.innerText = "🚨 Severe Compound Flood Warning";
+                simTitle.className = "text-sm font-bold text-rose-400 mt-1";
+                simDesc.innerText = "Klebang Besar river gates will lock due to sea level. Water accumulates rapidly inland.";
+            } else if(rVal >= 1.80 || tVal >= 2.00) {
+                simTitle.innerText = "⚠️ Partial Flood Warning";
+                simTitle.className = "text-sm font-bold text-amber-400 mt-1";
+                simDesc.innerText = "River water is approaching flood stage or sea level is blocking standard drainage.";
+            } else {
+                simTitle.innerText = "✅ Normal Safe Conditions";
+                simTitle.className = "text-sm font-bold text-emerald-400 mt-1";
+                simDesc.innerText = "No flood risk detected. River discharges normally into the sea.";
+            }
+        }
+
+        function applySimulatedToDashboard() {
+            state.riverLevel = parseFloat(document.getElementById('sim-river').value);
+            state.tideLevel = parseFloat(document.getElementById('sim-tide').value);
+            updateUI();
+            toggleTab('chart-tab');
+        }
+
+        function saveTelegramConfig() {
+            const token = document.getElementById('tg-bot-token').value.trim();
+            const id = document.getElementById('tg-chat-id').value.trim();
+
+            state.botToken = token;
+            state.chatId = id;
+
+            localStorage.setItem('tg_bot_token', token);
+            localStorage.setItem('tg_chat_id', id);
+
+            const msgEl = document.getElementById('tg-status-msg');
+            msgEl.className = "text-xs p-3.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 block";
+            msgEl.innerText = "✅ Telegram credentials saved to local browser storage!";
+        }
+
+        // Send Telegram API Call with Detailed Diagnostics
+        async function sendTelegramAlert(isManualTest = false) {
+            const token = (document.getElementById('tg-bot-token').value || state.botToken).trim();
+            const chatId = (document.getElementById('tg-chat-id').value || state.chatId).trim();
+
+            const msgEl = document.getElementById('tg-status-msg');
+            const testBtn = document.getElementById('tg-test-btn');
+
+            if(!token || !chatId) {
+                toggleTab('telegram-tab');
+                msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 block";
+                msgEl.innerText = "⚠️ Please fill in BOTH the Bot Token and Chat ID fields above.";
+                return;
+            }
+
+            // UI Feedback
+            if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Sending...`;
+            msgEl.className = "text-xs p-3.5 rounded-xl bg-blue-500/20 text-blue-300 border border-blue-500/30 block";
+            msgEl.innerText = "⏳ Connecting to Telegram API servers...";
+
+            let text = `🔔 <b>Melaka Flood Alert System Test</b>\n\n` +
+                       `📍 <b>Location:</b> Lencongan Sg. Malim (Klebang Besar D/S)\n` +
+                       `🌊 <b>Current River Level:</b> ${state.riverLevel.toFixed(2)} m\n` +
+                       `⚓ <b>Current Sea Tide:</b> ${state.tideLevel.toFixed(2)} m\n\n` +
+                       `✅ <i>Telegram Notification Bot is working!</i>`;
+
+            try {
+                const url = `https://api.telegram.org/bot${token}/sendMessage`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: text,
+                        parse_mode: 'HTML'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.ok) {
+                    msgEl.className = "text-xs p-3.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 block";
+                    msgEl.innerHTML = `🚀 <b>Success!</b> Test alert sent to Telegram. Check your Telegram chat window!`;
+                } else {
+                    // Analyze specific Telegram API errors
+                    let errorHint = "";
+                    const desc = data.description || "";
+
+                    if (desc.includes("chat not found") || desc.includes("Forbidden")) {
+                        errorHint = `<br><br><b>💡 Fix Solution:</b> Telegram bots cannot start a conversation with you automatically.<br>1. Open Telegram app.<br>2. Search for your bot name.<br>3. Tap <b>/start</b> at the bottom of the chat, then click 'Test Connection' again.`;
+                    } else if (desc.includes("Unauthorized")) {
+                        errorHint = `<br><br><b>💡 Fix Solution:</b> Invalid Bot Token. Make sure you copied the full token string from @BotFather (e.g. <code>123456789:ABC...</code>).`;
+                    } else if (desc.includes("bad request") && desc.includes("chat_id")) {
+                        errorHint = `<br><br><b>💡 Fix Solution:</b> Invalid Chat ID. Check @userinfobot on Telegram to double-check your numerical ID.`;
+                    }
+
+                    msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 block";
+                    msgEl.innerHTML = `❌ <b>Telegram API Error (${data.error_code || '400'}):</b> ${desc}${errorHint}`;
+                }
+            } catch(err) {
+                msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 block";
+                msgEl.innerHTML = `❌ <b>Network Request Blocked:</b> ${err.message}<br><br><b>💡 Possible Causes:</b><br>• An <b>AdBlocker</b> or <b>Brave Shield</b> is blocking request to <code>api.telegram.org</code>. Disable it for this site.<br>• Check your internet or VPN connection.`;
+            } finally {
+                if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1.5"></i> Test Connection`;
+            }
+        }
+
+        function copyPythonCode() {
+            const code = document.getElementById('python-code-block').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.currentTarget;
+                btn.innerHTML = `<i class="fa-solid fa-check mr-1 text-emerald-400"></i> Copied!`;
+                setTimeout(() => {
+                    btn.innerHTML = `<i class="fa-solid fa-copy mr-1"></i> Copy Code`;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
