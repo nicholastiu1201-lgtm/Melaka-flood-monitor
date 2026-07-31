@@ -92,7 +92,7 @@
                         <i class="fa-solid fa-sliders mr-1.5"></i> Simulate Scenarios
                     </button>
                     <button onclick="toggleTab('telegram-tab')" class="px-3 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-medium rounded-lg transition shadow-md shadow-cyan-900/30">
-                        <i class="fa-brands fa-telegram mr-1.5"></i> Config Telegram Bot
+                        <i class="fa-brands fa-telegram mr-1.5"></i> Bot Status
                     </button>
                 </div>
             </div>
@@ -187,13 +187,13 @@
                         </div>
                         <div class="flex justify-between text-xs">
                             <span class="text-slate-400">Telegram Alert Trigger:</span>
-                            <span id="telegram-trigger-status" class="font-bold text-slate-400">Armed & Ready</span>
+                            <span id="telegram-trigger-status" class="font-bold text-emerald-400"><i class="fa-solid fa-lock mr-1"></i> Active via GitHub Secrets</span>
                         </div>
                     </div>
 
-                    <button onclick="sendTelegramAlert(true)" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 py-2 rounded-xl text-xs font-medium transition flex items-center justify-center space-x-2">
+                    <button onclick="toggleTab('telegram-tab')" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600 py-2 rounded-xl text-xs font-medium transition flex items-center justify-center space-x-2">
                         <i class="fa-brands fa-telegram text-cyan-400 text-sm"></i>
-                        <span>Send Test Alert to Telegram</span>
+                        <span>View Alert Status & Manual Test</span>
                     </button>
                 </div>
 
@@ -207,7 +207,7 @@
                 </button>
                 <button id="btn-telegram-tab" onclick="toggleTab('telegram-tab')" class="py-2.5 px-4 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap">
                     <i class="fa-brands fa-telegram"></i>
-                    <span>Telegram Alert Setup</span>
+                    <span>Telegram Alert Status</span>
                 </button>
                 <button id="btn-scraper-tab" onclick="toggleTab('scraper-tab')" class="py-2.5 px-4 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap">
                     <i class="fa-solid fa-code"></i>
@@ -239,51 +239,57 @@
             <!-- Tab Content 2: Telegram Setup -->
             <div id="telegram-tab" class="tab-content hidden bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 space-y-6">
                 <div>
-                    <h3 class="text-base font-bold text-white flex items-center">
-                        <i class="fa-brands fa-telegram text-cyan-400 mr-2 text-xl"></i>
-                        Telegram Notification Settings
-                    </h3>
-                    <p class="text-xs text-slate-400 mt-1">Configure your Telegram Bot credentials to receive automatic flood alerts straight to your phone.</p>
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-bold text-white flex items-center">
+                            <i class="fa-brands fa-telegram text-cyan-400 mr-2 text-xl"></i>
+                            Telegram Notification Bot Status
+                        </h3>
+                        <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold rounded-lg flex items-center">
+                            <i class="fa-solid fa-shield-halved mr-1.5"></i> GitHub Actions Protected
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1">Automated 15-minute alerts run securely via GitHub Repository Secrets in the backend. Your keys are never publicly stored or rendered here.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Telegram Bot Token</label>
-                            <input type="text" id="tg-bot-token" placeholder="123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 font-mono">
-                            <p class="text-[11px] text-slate-500 mt-1">Obtained from <a href="https://t.me/BotFather" target="_blank" class="text-cyan-400 hover:underline">@BotFather</a> on Telegram.</p>
-                        </div>
+                        <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-4 space-y-3">
+                            <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center">
+                                <i class="fa-solid fa-vial-circle-check text-cyan-400 mr-2"></i>
+                                Instant Manual Test Console
+                            </h4>
+                            <p class="text-[11px] text-slate-400">To send a temporary test message from this browser window, enter your details below. Inputs are masked and cleared upon page refresh.</p>
+                            
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Temporary Bot Token</label>
+                                <input type="password" id="tg-bot-token" autocomplete="off" placeholder="••••••••••••••••••••••••••••••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 font-mono">
+                            </div>
 
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Your Telegram Chat ID</label>
-                            <input type="text" id="tg-chat-id" placeholder="987654321" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 font-mono">
-                            <p class="text-[11px] text-slate-500 mt-1">Get your ID from <a href="https://t.me/userinfobot" target="_blank" class="text-cyan-400 hover:underline">@userinfobot</a>.</p>
-                        </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Temporary Chat ID</label>
+                                <input type="password" id="tg-chat-id" autocomplete="off" placeholder="••••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500 font-mono">
+                            </div>
 
-                        <div class="pt-2 flex flex-wrap gap-3">
-                            <button onclick="saveTelegramConfig()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition">
-                                <i class="fa-solid fa-floppy-disk mr-1.5"></i> Save Credentials
-                            </button>
-                            <button id="tg-test-btn" onclick="sendTelegramAlert(true)" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition border border-slate-600">
-                                <i class="fa-solid fa-paper-plane mr-1.5"></i> Test Connection
+                            <button id="tg-test-btn" onclick="sendTelegramAlert()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2 rounded-xl text-xs font-bold transition shadow-lg shadow-cyan-900/20">
+                                <i class="fa-solid fa-paper-plane mr-1.5"></i> Send One-Time Test Alert
                             </button>
                         </div>
                         
-                        <!-- Detailed Diagnostic Message Box -->
+                        <!-- Diagnostic Status Box -->
                         <div id="tg-status-msg" class="text-xs p-3.5 rounded-xl hidden leading-relaxed"></div>
                     </div>
 
-                    <!-- Step-by-step guidance -->
+                    <!-- Security Architecture Guide -->
                     <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4 text-xs space-y-3">
                         <h4 class="font-bold text-slate-200 text-sm flex items-center">
-                            <i class="fa-solid fa-circle-info text-blue-400 mr-2"></i>
-                            Quick 3-Step Telegram Setup
+                            <i class="fa-solid fa-lock text-emerald-400 mr-2"></i>
+                            How Your Secrets Stay 100% Safe
                         </h4>
-                        <ol class="list-decimal list-inside space-y-2 text-slate-300 leading-relaxed">
-                            <li>Open Telegram, search for <strong>@BotFather</strong>, send <code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">/newbot</code>, copy your <strong>API Token</strong>.</li>
-                            <li><strong>CRITICAL STEP:</strong> Open a chat with your newly created bot in Telegram and tap <strong>START</strong> (or send <code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">/start</code>). Bots cannot message you unless you start them first!</li>
-                            <li>Search for <strong>@userinfobot</strong> in Telegram to get your numerical <strong>Chat ID</strong>.</li>
-                        </ol>
+                        <ul class="space-y-2 text-slate-300 leading-relaxed list-disc list-inside">
+                            <li><strong>Automated Cron Scraping:</strong> GitHub Actions runs <code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">scraper.py</code> every 15 minutes in an isolated cloud runner.</li>
+                            <li><strong>Encrypted Storage:</strong> Your Bot Token and Chat ID are read strictly from <code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">secrets.TELEGRAM_BOT_TOKEN</code>.</li>
+                            <li><strong>Public Website Safety:</strong> This GitHub Pages website only reads public water level readings from <code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">data.json</code>. No bot keys ever exist in this HTML or GitHub Pages file repository.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -293,7 +299,7 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <h3 class="text-base font-bold text-white">Automated Python Scraper & Telegram Bot Script</h3>
-                        <p class="text-xs text-slate-400 mt-1">Run this Python script on a 15-minute cron job (e.g., GitHub Actions, AWS Lambda, or a local server).</p>
+                        <p class="text-xs text-slate-400 mt-1">Run this Python script on a 15-minute cron job via GitHub Actions.</p>
                     </div>
                     <button onclick="copyPythonCode()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-600 transition">
                         <i class="fa-solid fa-copy mr-1"></i> Copy Code
@@ -308,9 +314,9 @@ import os
 import json
 from datetime import datetime
 
-# --- CONFIGURATION ---
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "YOUR_CHAT_ID")
+# --- SECURE CONFIGURATION VIA GITHUB SECRETS ---
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # Thresholds
 RIVER_ALERT_LEVEL = 1.80   # Warning Level in meters (Sg. Malim)
@@ -358,6 +364,9 @@ def get_sea_tide_level():
         return None
 
 def send_telegram_alert(message):
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        print("Telegram secrets missing in environment. Alert skipped.")
+        return
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": TELEGRAM_CHAT_ID,
@@ -374,7 +383,7 @@ def main():
     print(f"[{now_str}] Sg. Malim River Level: {river_level} m")
     print(f"[{now_str}] Melaka Sea Tide Level: {tide_level} m")
     
-    # Save output to data.json for the GitHub Pages web dashboard
+    # Save public numerical data to data.json
     data = {
         "riverLevel": river_level,
         "tideLevel": tide_level,
@@ -470,17 +479,12 @@ if __name__ == "__main__":
         // State Management
         let state = {
             riverLevel: 1.15,
-            tideLevel: 1.20,
-            botToken: localStorage.getItem('tg_bot_token') || '',
-            chatId: localStorage.getItem('tg_chat_id') || '',
+            tideLevel: 1.20
         };
 
         let hydroChart = null;
 
         window.onload = function() {
-            if(state.botToken) document.getElementById('tg-bot-token').value = state.botToken;
-            if(state.chatId) document.getElementById('tg-chat-id').value = state.chatId;
-
             initChart();
             fetchLiveData(); // Fetch live data.json on page load
         };
@@ -506,7 +510,7 @@ if __name__ == "__main__":
             if(refreshIcon) refreshIcon.classList.add('fa-spin');
 
             try {
-                // Fetch real data.json generated every 15 mins by GitHub Actions (with cache buster)
+                // Fetch data.json generated by GitHub Actions
                 const response = await fetch('./data.json?t=' + new Date().getTime());
                 if (response.ok) {
                     const data = await response.json();
@@ -518,7 +522,6 @@ if __name__ == "__main__":
                     document.getElementById('sync-time').innerText = new Date().toLocaleTimeString() + " (Demo)";
                 }
             } catch (err) {
-                console.log("data.json not found yet, using current state.");
                 document.getElementById('sync-time').innerText = new Date().toLocaleTimeString() + " (Local)";
             } finally {
                 if(refreshIcon) refreshIcon.classList.remove('fa-spin');
@@ -702,40 +705,23 @@ if __name__ == "__main__":
             toggleTab('chart-tab');
         }
 
-        function saveTelegramConfig() {
+        // Send One-Time Test Telegram Call without saving to storage
+        async function sendTelegramAlert() {
             const token = document.getElementById('tg-bot-token').value.trim();
-            const id = document.getElementById('tg-chat-id').value.trim();
-
-            state.botToken = token;
-            state.chatId = id;
-
-            localStorage.setItem('tg_bot_token', token);
-            localStorage.setItem('tg_chat_id', id);
-
-            const msgEl = document.getElementById('tg-status-msg');
-            msgEl.className = "text-xs p-3.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 block";
-            msgEl.innerText = "✅ Telegram credentials saved to local browser storage!";
-        }
-
-        // Send Telegram API Call with Detailed Diagnostics
-        async function sendTelegramAlert(isManualTest = false) {
-            const token = (document.getElementById('tg-bot-token').value || state.botToken).trim();
-            const chatId = (document.getElementById('tg-chat-id').value || state.chatId).trim();
+            const chatId = document.getElementById('tg-chat-id').value.trim();
 
             const msgEl = document.getElementById('tg-status-msg');
             const testBtn = document.getElementById('tg-test-btn');
 
             if(!token || !chatId) {
-                toggleTab('telegram-tab');
                 msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 block";
-                msgEl.innerText = "⚠️ Please fill in BOTH the Bot Token and Chat ID fields above.";
+                msgEl.innerText = "⚠️ Please enter a temporary Bot Token and Chat ID to run a live test.";
                 return;
             }
 
-            // UI Feedback
-            if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Sending...`;
+            if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Sending Test...`;
             msgEl.className = "text-xs p-3.5 rounded-xl bg-blue-500/20 text-blue-300 border border-blue-500/30 block";
-            msgEl.innerText = "⏳ Connecting to Telegram API servers...";
+            msgEl.innerText = "⏳ Sending one-time test message via Telegram API...";
 
             let text = `🔔 <b>Melaka Flood Alert System Test</b>\n\n` +
                        `📍 <b>Location:</b> Lencongan Sg. Malim (Klebang Besar D/S)\n` +
@@ -759,28 +745,16 @@ if __name__ == "__main__":
 
                 if (response.ok && data.ok) {
                     msgEl.className = "text-xs p-3.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 block";
-                    msgEl.innerHTML = `🚀 <b>Success!</b> Test alert sent to Telegram. Check your Telegram chat window!`;
+                    msgEl.innerHTML = `🚀 <b>Success!</b> Test alert sent to Telegram window!`;
                 } else {
-                    // Analyze specific Telegram API errors
-                    let errorHint = "";
-                    const desc = data.description || "";
-
-                    if (desc.includes("chat not found") || desc.includes("Forbidden")) {
-                        errorHint = `<br><br><b>💡 Fix Solution:</b> Telegram bots cannot start a conversation with you automatically.<br>1. Open Telegram app.<br>2. Search for your bot name.<br>3. Tap <b>/start</b> at the bottom of the chat, then click 'Test Connection' again.`;
-                    } else if (desc.includes("Unauthorized")) {
-                        errorHint = `<br><br><b>💡 Fix Solution:</b> Invalid Bot Token. Make sure you copied the full token string from @BotFather (e.g. <code>123456789:ABC...</code>).`;
-                    } else if (desc.includes("bad request") && desc.includes("chat_id")) {
-                        errorHint = `<br><br><b>💡 Fix Solution:</b> Invalid Chat ID. Check @userinfobot on Telegram to double-check your numerical ID.`;
-                    }
-
                     msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 block";
-                    msgEl.innerHTML = `❌ <b>Telegram API Error (${data.error_code || '400'}):</b> ${desc}${errorHint}`;
+                    msgEl.innerHTML = `❌ <b>Telegram API Error (${data.error_code || '400'}):</b> ${data.description || 'Failed to send'}`;
                 }
             } catch(err) {
                 msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 block";
-                msgEl.innerHTML = `❌ <b>Network Request Blocked:</b> ${err.message}<br><br><b>💡 Possible Causes:</b><br>• An <b>AdBlocker</b> or <b>Brave Shield</b> is blocking request to <code>api.telegram.org</code>. Disable it for this site.<br>• Check your internet or VPN connection.`;
+                msgEl.innerHTML = `❌ <b>Network Blocked:</b> ${err.message}. AdBlocker or extension may be blocking request to api.telegram.org.`;
             } finally {
-                if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1.5"></i> Test Connection`;
+                if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1.5"></i> Send One-Time Test Alert`;
             }
         }
 
