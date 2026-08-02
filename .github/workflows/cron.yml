@@ -1,22 +1,9 @@
-STREAMING_CHUNK:Defining execution schedule and workflow triggers...
-
 name: Melaka Flood Scraper & Auto Sync
 
-on:
-schedule:
-- cron: "*/15 * * * *"
-workflow_dispatch:
+on:schedule:- cron: '*/15 * * * *'workflow_dispatch:
+permissions:contents: write
 
-STREAMING_CHUNK:Setting repository write permissions for automated commits...
-
-permissions:
-contents: write
-
-STREAMING_CHUNK:Executing environment setup and Python scraping tasks...
-
-jobs:
-run-scraper:
-runs-on: ubuntu-latest
+jobs:run-scraper:runs-on: ubuntu-latest
 
 steps:
   - name: Checkout Repository
@@ -25,9 +12,9 @@ steps:
   - name: Set up Python 3.10
     uses: actions/setup-python@v5
     with:
-      python-version: "3.10"
+      python-version: '3.10'
 
-  - name: Install Python Dependencies
+  - name: Install Dependencies
     run: |
       python -m pip install --upgrade pip
       pip install requests beautifulsoup4 urllib3
