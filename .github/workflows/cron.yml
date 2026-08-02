@@ -2,17 +2,17 @@ name: Melaka Flood Scraper & Auto Sync
 
 on:
 schedule:
-- cron: '*/15 * * * *'  # Automatically executes every 15 minutes
-workflow_dispatch:       # Allows manual triggers from GitHub UI
+- cron: "*/15 * * * *"
+workflow_dispatch:
 inputs:
 test_alert:
-description: 'Send immediate test message to Telegram'
+description: "Send immediate test message to Telegram"
 required: false
 type: boolean
 default: false
 
 permissions:
-contents: write  # Critical permission required for committing updated data files
+contents: write
 
 jobs:
 run-scraper:
@@ -25,7 +25,7 @@ steps:
   - name: Set up Python 3.10
     uses: actions/setup-python@v5
     with:
-      python-version: '3.10'
+      python-version: "3.10"
 
   - name: Install Python Dependencies
     run: |
