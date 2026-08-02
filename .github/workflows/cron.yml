@@ -1,17 +1,11 @@
-name: Melaka Flood Scraper & Auto Sync
-
 STREAMING_CHUNK:Defining execution schedule and workflow triggers...
+
+name: Melaka Flood Scraper & Auto Sync
 
 on:
 schedule:
 - cron: "*/15 * * * *"
 workflow_dispatch:
-inputs:
-test_alert:
-description: "Send immediate test message to Telegram"
-required: false
-type: boolean
-default: false
 
 STREAMING_CHUNK:Setting repository write permissions for automated commits...
 
@@ -38,14 +32,10 @@ steps:
       python -m pip install --upgrade pip
       pip install requests beautifulsoup4 urllib3
 
-
-STREAMING_CHUNK:Running scraper and committing updated JSON data files...
-
   - name: Scrape Water Levels & Trigger Alerts
     env:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-      TEST_ALERT: ${{ inputs.test_alert || 'false' }}
     run: python scraper.py
 
   - name: Commit Updated data.json & history.json
