@@ -1,5 +1,7 @@
 name: Melaka Flood Scraper & Auto Sync
 
+STREAMING_CHUNK:Defining execution schedule and workflow triggers...
+
 on:
 schedule:
 - cron: "*/15 * * * *"
@@ -11,8 +13,12 @@ required: false
 type: boolean
 default: false
 
+STREAMING_CHUNK:Setting repository write permissions for automated commits...
+
 permissions:
 contents: write
+
+STREAMING_CHUNK:Executing environment setup and Python scraping tasks...
 
 jobs:
 run-scraper:
@@ -31,6 +37,9 @@ steps:
     run: |
       python -m pip install --upgrade pip
       pip install requests beautifulsoup4 urllib3
+
+
+STREAMING_CHUNK:Running scraper and committing updated JSON data files...
 
   - name: Scrape Water Levels & Trigger Alerts
     env:
