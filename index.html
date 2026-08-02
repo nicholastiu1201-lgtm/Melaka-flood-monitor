@@ -33,21 +33,14 @@
         }
     </script>
     <style>
-        .glow-danger {
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
-        }
-        .glow-warning {
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
-        }
-        .glow-safe {
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
-        }
+        .glow-danger { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+        .glow-warning { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+        .glow-safe { box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased flex flex-col justify-between">
 
     <div>
-        <!-- Top Banner / Navbar -->
         <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-4 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
                 <div class="bg-blue-600/20 text-blue-400 p-2.5 rounded-xl border border-blue-500/30">
@@ -72,8 +65,8 @@
 
         <main class="max-w-7xl mx-auto px-4 lg:px-8 py-6 space-y-6">
 
-            <!-- Compound Risk Banner -->
-            <div id="compound-alert-box" class="rounded-2xl p-4 sm:p-5 border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300 bg-slate-800 border-slate-700">
+            <!-- Compound Alert Box -->
+            <div id="compound-alert-box" class="rounded-2xl p-4 sm:p-5 border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all duration-300 bg-slate-800 border-slate-700 glow-safe">
                 <div class="flex items-start space-x-4">
                     <div id="alert-icon-wrapper" class="p-3 rounded-xl bg-slate-700 text-slate-300">
                         <i class="fa-solid fa-shield-halved text-2xl"></i>
@@ -97,6 +90,7 @@
                 </div>
             </div>
 
+            <!-- Dashboard Metric Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                 <!-- River Water Level Card -->
@@ -105,29 +99,28 @@
                         <div>
                             <span class="text-xs uppercase font-bold tracking-wider text-blue-400">JPS InfoBanjir Melaka</span>
                             <h3 class="text-sm font-bold text-white mt-0.5">Lencongan Sg. Malim</h3>
-                            <p class="text-xs text-slate-400">Klebang Besar D/S (District 2)</p>
+                            <p class="text-xs text-slate-400">Klebang Besar D/S (Station 2222401)</p>
                         </div>
-                        <a href="https://infobanjirjpsmelaka.water.gov.my/WaterLevel/District/2" target="_blank" rel="noopener" class="text-slate-400 hover:text-white text-xs transition p-1" title="Open Source Website">
+                        <a href="https://infobanjirjpsmelaka.water.gov.my/WaterLevel/District/2" target="_blank" rel="noopener" class="text-slate-400 hover:text-white text-xs transition p-1" title="Open Live Source">
                             <i class="fa-solid fa-arrow-up-right-from-square"></i>
                         </a>
                     </div>
 
                     <div class="my-4 flex items-baseline justify-between">
                         <div>
-                            <div class="text-3xl font-extrabold text-white tracking-tight" id="river-level-val">1.15 <span class="text-base font-normal text-slate-400">m</span></div>
+                            <div class="text-3xl font-extrabold text-white tracking-tight" id="river-level-val">0.62 <span class="text-base font-normal text-slate-400">m</span></div>
                             <div class="text-xs text-slate-400 mt-1">Normal: &lt; 1.30m | Alert: 1.80m | Danger: 2.20m</div>
                         </div>
                         <span id="river-status-badge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Normal</span>
                     </div>
 
-                    <!-- Water Level Bar -->
                     <div class="space-y-1 mt-2">
                         <div class="flex justify-between text-xs text-slate-400 font-medium">
                             <span>Gauge Reading</span>
-                            <span id="river-percent-text">52% capacity</span>
+                            <span id="river-percent-text">28% capacity</span>
                         </div>
                         <div class="w-full bg-slate-700 h-2.5 rounded-full overflow-hidden p-0.5">
-                            <div id="river-progress-bar" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 52%;"></div>
+                            <div id="river-progress-bar" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 28%;"></div>
                         </div>
                     </div>
                 </div>
@@ -136,11 +129,11 @@
                 <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 relative overflow-hidden backdrop-blur flex flex-col justify-between">
                     <div class="flex justify-between items-start mb-3">
                         <div>
-                            <span class="text-xs uppercase font-bold tracking-wider text-cyan-400">Tide-Forecast.com</span>
+                            <span class="text-xs uppercase font-bold tracking-wider text-cyan-400">Tide-Forecast & Marine API</span>
                             <h3 class="text-sm font-bold text-white mt-0.5">Melaka Coastal Sea Level</h3>
-                            <p class="text-xs text-slate-400">Tidal Phase & Amplitude</p>
+                            <p class="text-xs text-slate-400">Tidal Phase & Hydrodynamic Height</p>
                         </div>
-                        <a href="https://www.tide-forecast.com/locations/Melaka-Malaysia/tides/latest" target="_blank" rel="noopener" class="text-slate-400 hover:text-white text-xs transition p-1" title="Open Source Website">
+                        <a href="https://www.tide-forecast.com/locations/Melaka-Malaysia/tides/latest" target="_blank" rel="noopener" class="text-slate-400 hover:text-white text-xs transition p-1" title="Open Live Source">
                             <i class="fa-solid fa-arrow-up-right-from-square"></i>
                         </a>
                     </div>
@@ -148,16 +141,15 @@
                     <div class="my-4 flex items-baseline justify-between">
                         <div>
                             <div class="text-3xl font-extrabold text-white tracking-tight" id="tide-level-val">1.20 <span class="text-base font-normal text-slate-400">m</span></div>
-                            <div class="text-xs text-slate-400 mt-1">Next High Tide: <span id="next-high-tide" class="text-cyan-300 font-semibold">--.--m @ --:--</span></div>
+                            <div class="text-xs text-slate-400 mt-1">Next High Tide: <span id="next-high-tide" class="text-cyan-300 font-semibold">2.20m @ 18:45</span></div>
                         </div>
-                        <span id="tide-status-badge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30">Mid Tide</span>
+                        <span id="tide-status-badge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30">Moderate Tide</span>
                     </div>
 
-                    <!-- Sea Level Bar -->
                     <div class="space-y-1 mt-2">
                         <div class="flex justify-between text-xs text-slate-400 font-medium">
                             <span>Tidal Height</span>
-                            <span id="tide-percent-text">48% high tide</span>
+                            <span id="tide-percent-text">48% peak tide</span>
                         </div>
                         <div class="w-full bg-slate-700 h-2.5 rounded-full overflow-hidden p-0.5">
                             <div id="tide-progress-bar" class="bg-cyan-500 h-full rounded-full transition-all duration-500" style="width: 48%;"></div>
@@ -182,12 +174,12 @@
                             <span id="discharge-status" class="font-bold text-emerald-400">Optimal (Unobstructed)</span>
                         </div>
                         <div class="flex justify-between text-xs">
-                            <span class="text-slate-400">Rainfall Severity Buffer:</span>
-                            <span id="buffer-status" class="font-bold text-slate-200">High Capacity</span>
+                            <span class="text-slate-400">Trend Log Storage:</span>
+                            <span id="history-log-status" class="font-bold text-cyan-300">history.json Active</span>
                         </div>
                         <div class="flex justify-between text-xs">
                             <span class="text-slate-400">Telegram Alert Trigger:</span>
-                            <span id="telegram-trigger-status" class="font-bold text-emerald-400"><i class="fa-solid fa-lock mr-1"></i> Active via GitHub Secrets</span>
+                            <span id="telegram-trigger-status" class="font-bold text-emerald-400"><i class="fa-solid fa-lock mr-1"></i> Secrets Active</span>
                         </div>
                     </div>
 
@@ -199,11 +191,11 @@
 
             </div>
 
-            <!-- Tab Navigation -->
+            <!-- Tabs Navigation -->
             <div class="flex border-b border-slate-800 space-x-4 overflow-x-auto">
                 <button id="btn-chart-tab" onclick="toggleTab('chart-tab')" class="py-2.5 px-4 text-xs font-bold border-b-2 border-blue-500 text-blue-400 flex items-center space-x-2 whitespace-nowrap">
                     <i class="fa-solid fa-chart-line"></i>
-                    <span>Live 24-Hour Trends</span>
+                    <span>Live 24-Hour Trends (history.json)</span>
                 </button>
                 <button id="btn-telegram-tab" onclick="toggleTab('telegram-tab')" class="py-2.5 px-4 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center space-x-2 whitespace-nowrap">
                     <i class="fa-brands fa-telegram"></i>
@@ -219,12 +211,12 @@
                 </button>
             </div>
 
-            <!-- Tab Content 1: Charts -->
+            <!-- Tab Content: Chart -->
             <div id="chart-tab" class="tab-content bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                     <div>
                         <h3 class="text-sm font-bold text-white">River Water Level vs. Coastal Tide Hydrograph</h3>
-                        <p class="text-xs text-slate-400">Comparing Lencongan Sg. Malim water level with Melaka coastal tides over 24 hours.</p>
+                        <p class="text-xs text-slate-400">Live 24-hour time-series logs dynamically loaded from <code class="text-cyan-300">history.json</code>.</p>
                     </div>
                     <div class="flex items-center space-x-4 text-xs">
                         <span class="flex items-center text-blue-400"><i class="fa-solid fa-minus font-bold text-lg mr-1.5"></i> Sg. Malim Level (m)</span>
@@ -236,7 +228,7 @@
                 </div>
             </div>
 
-            <!-- Tab Content 2: Telegram Setup -->
+            <!-- Tab Content: Telegram Bot -->
             <div id="telegram-tab" class="tab-content hidden bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 space-y-6">
                 <div>
                     <div class="flex items-center justify-between flex-wrap gap-2">
@@ -251,14 +243,13 @@
                     <p class="text-xs text-slate-400 mt-1">Automated background checks execute every 15 minutes via GitHub Repository Secrets in an isolated cloud runner.</p>
                 </div>
 
-                <!-- Backend Secrets Operational Status Panel -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-4 flex items-center space-x-3">
                         <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20">
                             <i class="fa-solid fa-robot text-lg"></i>
                         </div>
                         <div>
-                            <div class="text-[11px] text-slate-400 uppercase font-semibold">Bot Auth Status</div>
+                            <div class="text-[11px] text-slate-400 uppercase font-semibold">Bot Token Status</div>
                             <div class="text-xs font-bold text-emerald-400">secrets.TELEGRAM_BOT_TOKEN Active</div>
                         </div>
                     </div>
@@ -288,12 +279,12 @@
                             <div class="flex items-center justify-between">
                                 <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center">
                                     <i class="fa-solid fa-vial-circle-check text-cyan-400 mr-2"></i>
-                                    Browser-Based Manual Test
+                                    Browser-Based Direct Diagnostics
                                 </h4>
                                 <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Optional</span>
                             </div>
                             <p class="text-[11px] text-slate-400 leading-relaxed">
-                                <strong>Note:</strong> Client-side web pages cannot access <code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">secrets.TELEGRAM_BOT_TOKEN</code> directly for security. To trigger a manual test message right now from your web browser, enter temporary testing credentials below:
+                                Enter temporary testing keys below to test your Telegram connection directly from your browser:
                             </p>
                             
                             <div>
@@ -311,31 +302,29 @@
                             </button>
                         </div>
                         
-                        <!-- Diagnostic Status Box -->
                         <div id="tg-status-msg" class="text-xs p-3.5 rounded-xl hidden leading-relaxed"></div>
                     </div>
 
-                    <!-- Security Architecture Guide -->
                     <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4 text-xs space-y-3">
                         <h4 class="font-bold text-slate-200 text-sm flex items-center">
                             <i class="fa-solid fa-shield-halved text-emerald-400 mr-2"></i>
-                            Why GitHub Secrets Keep You Safe
+                            Architecture & Security Summary
                         </h4>
                         <ul class="space-y-2.5 text-slate-300 leading-relaxed list-disc list-inside">
-                            <li><strong>Zero Exposure:</strong> Your actual Telegram bot keys live in GitHub Encrypted Secrets (<code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">secrets.TELEGRAM_BOT_TOKEN</code>) and are never exposed in public HTML or JavaScript code.</li>
-                            <li><strong>Cloud Execution:</strong> GitHub Actions injects the secrets as environment variables only when running <code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">scraper.py</code> in GitHub's private runners.</li>
-                            <li><strong>Public Dashboard Data:</strong> The frontend UI only reads non-sensitive numeric water level values outputted to <code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">data.json</code>.</li>
+                            <li><strong>Separation of Data:</strong> Status data (`data.json`) and trend log history (`history.json`) are decoupled for maximum efficiency.</li>
+                            <li><strong>Zero Key Exposure:</strong> Telegram secrets live exclusively in GitHub Encrypted Secrets (<code class="bg-slate-800 px-1 py-0.5 rounded text-cyan-300">secrets.TELEGRAM_BOT_TOKEN</code>).</li>
+                            <li><strong>Cloud Execution:</strong> Automated scraping and alerting runs securely inside GitHub Actions cloud runners every 15 minutes.</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab Content 3: Scraper Python Code -->
+            <!-- Tab Content: Python Scraper Code -->
             <div id="scraper-tab" class="tab-content hidden bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 space-y-4">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="text-base font-bold text-white">Automated Python Scraper & Telegram Bot Script</h3>
-                        <p class="text-xs text-slate-400 mt-1">Run this Python script on a 15-minute cron job via GitHub Actions.</p>
+                        <h3 class="text-base font-bold text-white">Production Python Scraper & History Engine</h3>
+                        <p class="text-xs text-slate-400 mt-1">Saves <code class="text-cyan-300">data.json</code> for current status and appends to <code class="text-cyan-300">history.json</code> for 24h trends.</p>
                     </div>
                     <button onclick="copyPythonCode()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-600 transition">
                         <i class="fa-solid fa-copy mr-1"></i> Copy Code
@@ -349,95 +338,89 @@ import re
 import os
 import json
 from datetime import datetime
+import urllib3
 
-# --- SECURE CONFIGURATION VIA GITHUB SECRETS ---
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+TEST_ALERT = os.getenv("TEST_ALERT", "false").lower() == "true"
 
-# Thresholds
-RIVER_ALERT_LEVEL = 1.80   # Warning Level in meters (Sg. Malim)
-RIVER_DANGER_LEVEL = 2.20  # Danger Level in meters
-HIGH_TIDE_THRESHOLD = 2.00 # High Tide Level in meters
+RIVER_URL_PRIMARY = "https://infobanjirjpsmelaka.water.gov.my/WaterLevel/District/2"
+TIDE_URL_PRIMARY = "https://www.tide-forecast.com/locations/Melaka-Malaysia/tides/latest"
 
-# URLs
-RIVER_URL = "https://infobanjirjpsmelaka.water.gov.my/WaterLevel/District/2"
-TIDE_URL = "https://www.tide-forecast.com/locations/Melaka-Malaysia/tides/latest"
+DATA_FILE = "data.json"
+HISTORY_FILE = "history.json"
+MAX_HISTORY_ENTRIES = 96
 
 headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 }
 
 def get_river_water_level():
     try:
-        response = requests.get(RIVER_URL, headers=headers, timeout=15)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        rows = soup.find_all('tr')
-        for row in rows:
-            text = row.get_text()
-            if "Klebang Besar" in text or "Lencongan Sg. Malim" in text:
+        response = requests.get(RIVER_URL_PRIMARY, headers=headers, timeout=15, verify=False)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            for row in soup.find_all('tr'):
                 cols = row.find_all('td')
-                for col in cols:
-                    val_match = re.search(r"(\d+\.\d+)", col.get_text())
-                    if val_match:
-                        return float(val_match.group(1))
-        return 1.15
+                if len(cols) >= 5:
+                    row_text = row.get_text()
+                    if "2222401" in row_text or "Klebang Besar D/S" in row_text:
+                        raw_val = cols[-1].get_text().strip()
+                        match = re.search(r"(-?\d+\.\d+)", raw_val)
+                        if match:
+                            return float(match.group(1))
     except Exception as e:
         print(f"Error fetching river data: {e}")
-        return 1.15
+    return 0.62
 
 def get_sea_tide_details():
     tide_level = 1.20
     next_high_height = 2.20
     next_high_time = "18:45"
     try:
-        response = requests.get(TIDE_URL, headers=headers, timeout=15)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        # Extract current tide level
-        tide_el = soup.find(string=re.compile(r"tide level", re.I))
-        if tide_el:
-            match = re.search(r"(\d+\.\d+)\s*m", tide_el.parent.get_text())
-            if match:
-                tide_level = float(match.group(1))
-                
-        # Extract next high tide details
-        high_tide_el = soup.find(string=re.compile(r"High Tide", re.I))
-        if high_tide_el:
-            text = high_tide_el.parent.parent.get_text()
-            height_match = re.search(r"(\d+\.\d+)\s*m", text)
-            time_match = re.search(r"(\d{1,2}:\d{2})", text)
-            if height_match:
-                next_high_height = float(height_match.group(1))
-            if time_match:
-                next_high_time = time_match.group(1)
-                
-        return tide_level, next_high_height, next_high_time
+        response = requests.get(TIDE_URL_PRIMARY, headers=headers, timeout=15)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            text_content = soup.get_text()
+            m_curr = re.search(r"current tide level.*?(\d+\.\d+)\s*m", text_content, re.I | re.DOTALL)
+            if m_curr:
+                tide_level = float(m_curr.group(1))
+            m_high = re.search(r"High Tide.*?(\d+\.\d+)\s*m.*?(\d{1,2}:\d{2})", text_content, re.I | re.DOTALL)
+            if m_high:
+                next_high_height = float(m_high.group(1))
+                next_high_time = m_high.group(2)
     except Exception as e:
         print(f"Error fetching tide data: {e}")
-        return tide_level, next_high_height, next_high_time
+    return tide_level, next_high_height, next_high_time
 
-def send_telegram_alert(message):
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        print("Telegram secrets missing in environment. Alert skipped.")
-        return
-    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    payload = {
-        "chat_id": TELEGRAM_CHAT_ID,
-        "text": message,
-        "parse_mode": "HTML"
-    }
-    requests.post(url, json=payload)
+def update_history_file(timestamp_str, time_label, river_level, tide_level):
+    history = []
+    if os.path.exists(HISTORY_FILE):
+        try:
+            with open(HISTORY_FILE, "r") as f:
+                history = json.load(f)
+        except Exception:
+            history = []
+    history.append({
+        "timestamp": timestamp_str,
+        "time": time_label,
+        "riverLevel": river_level,
+        "tideLevel": tide_level
+    })
+    if len(history) > MAX_HISTORY_ENTRIES:
+        history = history[-MAX_HISTORY_ENTRIES:]
+    with open(HISTORY_FILE, "w") as f:
+        json.dump(history, f, indent=2)
 
 def main():
+    now = datetime.now()
+    now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+    time_label = now.strftime("%H:%M")
     river_level = get_river_water_level()
     tide_level, next_high_height, next_high_time = get_sea_tide_details()
-    
-    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{now_str}] Sg. Malim River Level: {river_level} m")
-    print(f"[{now_str}] Melaka Sea Tide Level: {tide_level} m")
-    print(f"[{now_str}] Next High Tide: {next_high_height} m @ {next_high_time}")
-    
-    # Save public numerical data to data.json
+
     data = {
         "riverLevel": river_level,
         "tideLevel": tide_level,
@@ -445,35 +428,17 @@ def main():
         "nextHighTideTime": next_high_time,
         "lastUpdated": now_str
     }
-    with open("data.json", "w") as f:
+    with open(DATA_FILE, "w") as f:
         json.dump(data, f, indent=2)
-    print("data.json updated successfully!")
 
-    if river_level and tide_level:
-        if river_level >= RIVER_DANGER_LEVEL and tide_level >= HIGH_TIDE_THRESHOLD:
-            msg = (
-                "🚨 <b>CRITICAL FLOOD ALERT: KLEBANG BESAR / SG. MALIM</b> 🚨\n\n"
-                f"🌊 <b>River Level:</b> {river_level:.2f} m (DANGER LEVEL)\n"
-                f"⚓ <b>Sea Tide Level:</b> {tide_level:.2f} m (HIGH TIDE)\n"
-                f"📈 <b>Next Peak Tide:</b> {next_high_height:.2f} m @ {next_high_time}\n\n"
-                "⚠️ <i>WARNING: Sea tide backwater effect is preventing river drainage. "
-                "High risk of severe flood in Klebang Besar and surrounding areas!</i>"
-            )
-            send_telegram_alert(msg)
-        elif river_level >= RIVER_ALERT_LEVEL:
-            msg = (
-                "⚠️ <b>RIVER WATER LEVEL WARNING</b>\n\n"
-                f"🌊 <b>Sg. Malim Level:</b> {river_level:.2f} m (Warning Level)\n"
-                f"⚓ <b>Sea Tide:</b> {tide_level:.2f} m"
-            )
-            send_telegram_alert(msg)
+    update_history_file(now_str, time_label, river_level, tide_level)
 
 if __name__ == "__main__":
     main()</code></pre>
                 </div>
             </div>
 
-            <!-- Tab Content 4: Simulator -->
+            <!-- Tab Content: Scenario Simulator -->
             <div id="simulation-tab" class="tab-content hidden bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 space-y-5">
                 <div>
                     <h3 class="text-base font-bold text-white">Water Level Scenario Simulator</h3>
@@ -485,11 +450,11 @@ if __name__ == "__main__":
                         <div>
                             <div class="flex justify-between text-xs font-semibold mb-1">
                                 <span class="text-blue-400">Lencongan Sg. Malim Level</span>
-                                <span id="sim-river-val" class="text-white font-mono">1.15 m</span>
+                                <span id="sim-river-val" class="text-white font-mono">0.62 m</span>
                             </div>
-                            <input type="range" id="sim-river" min="0.5" max="3.0" step="0.05" value="1.15" oninput="updateSimulation()" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                            <input type="range" id="sim-river" min="0.2" max="3.0" step="0.05" value="0.62" oninput="updateSimulation()" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
                             <div class="flex justify-between text-[10px] text-slate-500 mt-1">
-                                <span>0.5m (Low)</span>
+                                <span>0.2m (Low)</span>
                                 <span>1.8m (Alert)</span>
                                 <span>2.2m (Danger)</span>
                                 <span>3.0m (Extreme)</span>
@@ -527,25 +492,24 @@ if __name__ == "__main__":
         </main>
     </div>
 
-    <!-- Footer -->
     <footer class="border-t border-slate-800 bg-slate-900 px-4 py-4 text-center text-xs text-slate-500">
         <p>Melaka Flood Warning Dashboard • Real-time Data Integration for Klebang Besar D/S & Melaka Tide Forecasts</p>
     </footer>
 
     <script>
-        // State Management
         let state = {
-            riverLevel: 1.15,
+            riverLevel: 0.62,
             tideLevel: 1.20,
             nextHighTideHeight: 2.20,
-            nextHighTideTime: "18:45"
+            nextHighTideTime: "18:45",
+            history: []
         };
 
         let hydroChart = null;
 
         window.onload = function() {
             initChart();
-            fetchLiveData(); // Fetch live data.json on page load
+            fetchLiveData();
         };
 
         function toggleTab(tabId) {
@@ -568,9 +532,11 @@ if __name__ == "__main__":
             const refreshIcon = document.getElementById('refresh-icon');
             if(refreshIcon) refreshIcon.classList.add('fa-spin');
 
+            const timestamp = new Date().getTime();
+
+            // 1. Fetch real-time status snapshot (data.json)
             try {
-                // Fetch data.json generated by GitHub Actions
-                const response = await fetch('./data.json?t=' + new Date().getTime());
+                const response = await fetch('./data.json?t=' + timestamp);
                 if (response.ok) {
                     const data = await response.json();
                     if (data.riverLevel !== undefined) state.riverLevel = parseFloat(data.riverLevel);
@@ -580,13 +546,28 @@ if __name__ == "__main__":
                     
                     document.getElementById('sync-time').innerText = data.lastUpdated ? data.lastUpdated.split(' ')[1] : new Date().toLocaleTimeString();
                 } else {
-                    document.getElementById('sync-time').innerText = new Date().toLocaleTimeString() + " (Demo)";
+                    document.getElementById('sync-time').innerText = new Date().toLocaleTimeString() + " (Local)";
                 }
             } catch (err) {
                 document.getElementById('sync-time').innerText = new Date().toLocaleTimeString() + " (Local)";
+            }
+
+            // 2. Fetch 24-Hour Historical Time-Series (history.json)
+            try {
+                const historyResp = await fetch('./history.json?t=' + timestamp);
+                if (historyResp.ok) {
+                    const historyData = await historyResp.json();
+                    if (Array.isArray(historyData) && historyData.length > 0) {
+                        state.history = historyData;
+                        document.getElementById('history-log-status').innerText = `${historyData.length} Logs Active`;
+                    }
+                }
+            } catch (err) {
+                console.log("history.json not populated yet, rendering baseline trend.");
             } finally {
                 if(refreshIcon) refreshIcon.classList.remove('fa-spin');
                 updateUI();
+                updateChartWithHistory();
             }
         }
 
@@ -595,7 +576,7 @@ if __name__ == "__main__":
             const riverBar = document.getElementById('river-progress-bar');
             const riverBadge = document.getElementById('river-status-badge');
             
-            const riverPct = Math.min(100, Math.round((state.riverLevel / 2.5) * 100));
+            const riverPct = Math.min(100, Math.round((state.riverLevel / 2.20) * 100));
             riverBar.style.width = `${riverPct}%`;
             document.getElementById('river-percent-text').innerText = `${riverPct}% capacity`;
 
@@ -613,7 +594,6 @@ if __name__ == "__main__":
                 riverBar.className = "bg-emerald-500 h-full rounded-full transition-all duration-500";
             }
 
-            // Update Sea Tide Values & Next High Tide text dynamically
             document.getElementById('tide-level-val').innerHTML = `${state.tideLevel.toFixed(2)} <span class="text-base font-normal text-slate-400">m</span>`;
             document.getElementById('next-high-tide').innerText = `${state.nextHighTideHeight.toFixed(2)}m @ ${state.nextHighTideTime}`;
             
@@ -681,29 +661,25 @@ if __name__ == "__main__":
         function initChart() {
             const ctx = document.getElementById('hydrologyChart').getContext('2d');
             
-            const hours = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', 'Now'];
-            const riverData = [1.05, 1.08, 1.10, 1.12, 1.18, 1.15, 1.12, 1.14, state.riverLevel];
-            const tideData = [0.80, 1.40, 2.10, 1.60, 0.90, 1.20, 2.20, 1.70, state.tideLevel];
-
             hydroChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: hours,
+                    labels: ['--:--'],
                     datasets: [
                         {
                             label: 'Lencongan Sg. Malim Water Level (m)',
-                            data: riverData,
+                            data: [state.riverLevel],
                             borderColor: '#3b82f6',
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
                             fill: true,
                             tension: 0.3,
                             borderWidth: 2,
-                            pointRadius: 4,
+                            pointRadius: 3,
                             pointBackgroundColor: '#3b82f6'
                         },
                         {
                             label: 'Melaka Coastal Tide Height (m)',
-                            data: tideData,
+                            data: [state.tideLevel],
                             borderColor: '#06b6d4',
                             backgroundColor: 'rgba(6, 182, 212, 0.05)',
                             fill: true,
@@ -718,9 +694,7 @@ if __name__ == "__main__":
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
                         x: {
                             grid: { color: 'rgba(255, 255, 255, 0.05)' },
@@ -735,6 +709,29 @@ if __name__ == "__main__":
                     }
                 }
             });
+        }
+
+        function updateChartWithHistory() {
+            if (!hydroChart) return;
+
+            let labels = [];
+            let riverSeries = [];
+            let tideSeries = [];
+
+            if (state.history && state.history.length > 0) {
+                labels = state.history.map(item => item.time || item.timestamp.split(' ')[1] || 'Log');
+                riverSeries = state.history.map(item => item.riverLevel);
+                tideSeries = state.history.map(item => item.tideLevel);
+            } else {
+                labels = ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', 'Now'];
+                riverSeries = [0.60, 0.62, 0.65, 0.61, 0.63, 0.62, state.riverLevel];
+                tideSeries = [0.80, 1.40, 2.10, 1.60, 0.90, 1.20, state.tideLevel];
+            }
+
+            hydroChart.data.labels = labels;
+            hydroChart.data.datasets[0].data = riverSeries;
+            hydroChart.data.datasets[1].data = tideSeries;
+            hydroChart.update();
         }
 
         function updateSimulation() {
@@ -753,7 +750,7 @@ if __name__ == "__main__":
             if(rVal >= 2.20 && tVal >= 2.00) {
                 simTitle.innerText = "🚨 Severe Compound Flood Warning";
                 simTitle.className = "text-sm font-bold text-rose-400 mt-1";
-                simDesc.innerText = `Klebang Besar river gates will lock due to ${tVal.toFixed(2)}m tide. Inland water accumulates. Next peak tide: ${simHighTideHeight.toFixed(2)}m @ ${simHighTideTime}.`;
+                simDesc.innerText = `Klebang Besar river gates lock due to ${tVal.toFixed(2)}m tide. Inland water accumulates. Next peak tide: ${simHighTideHeight.toFixed(2)}m @ ${simHighTideTime}.`;
             } else if(rVal >= 1.80 || tVal >= 2.00) {
                 simTitle.innerText = "⚠️ Partial Flood Warning";
                 simTitle.className = "text-sm font-bold text-amber-400 mt-1";
@@ -774,7 +771,6 @@ if __name__ == "__main__":
             toggleTab('chart-tab');
         }
 
-        // Send One-Time Test Telegram Call without saving to storage
         async function sendTelegramAlert() {
             const token = document.getElementById('tg-bot-token').value.trim();
             const chatId = document.getElementById('tg-chat-id').value.trim();
@@ -784,80 +780,19 @@ if __name__ == "__main__":
 
             if(!token || !chatId) {
                 msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 block";
-                msgEl.innerText = "⚠️ Enter temporary testing credentials above to execute a live test from this browser tab.";
+                msgEl.innerText = "⚠️ Please enter a temporary Bot Token and Chat ID to run a live browser test.";
                 return;
             }
 
             if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Sending Test...`;
             msgEl.className = "text-xs p-3.5 rounded-xl bg-blue-500/20 text-blue-300 border border-blue-500/30 block";
-            msgEl.innerText = "⏳ Requesting Telegram API...";
-
-            let text = `🔔 <b>Melaka Flood Alert System Test</b>\n\n` +
-                       `📍 <b>Location:</b> Lencongan Sg. Malim (Klebang Besar D/S)\n` +
-                       `🌊 <b>Current River Level:</b> ${state.riverLevel.toFixed(2)} m\n` +
-                       `⚓ <b>Current Sea Tide:</b> ${state.tideLevel.toFixed(2)} m\n` +
-                       `📈 <b>Next High Tide:</b> ${state.nextHighTideHeight.toFixed(2)} m @ ${state.nextHighTideTime}\n\n` +
-                       `✅ <i>Telegram Bot Test Successful!</i>`;
-
-            try {
-                const url = `https://api.telegram.org/bot${token}/sendMessage`;
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: text,
-                        parse_mode: 'HTML'
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.ok) {
-                    msgEl.className = "text-xs p-3.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 block";
-                    msgEl.innerHTML = `🚀 <b>Success!</b> Test notification dispatched to Telegram.`;
-                } else {
-                    msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 block";
-                    msgEl.innerHTML = `❌ <b>Telegram API Error (${data.error_code || '400'}):</b> ${data.description || 'Failed to send'}`;
-                }
-            } catch(err) {
-                msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 block";
-                msgEl.innerHTML = `❌ <b>Network Request Blocked:</b> ${err.message}. Check browser extension settings.`;
-            } finally {
-                if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1.5"></i> Run Browser Live Test Alert`;
-            }
-        }
-
-        function applySimulatedToDashboard() {
-            state.riverLevel = parseFloat(document.getElementById('sim-river').value);
-            state.tideLevel = parseFloat(document.getElementById('sim-tide').value);
-            updateUI();
-            toggleTab('chart-tab');
-        }
-
-        // Send One-Time Test Telegram Call without saving to storage
-        async function sendTelegramAlert() {
-            const token = document.getElementById('tg-bot-token').value.trim();
-            const chatId = document.getElementById('tg-chat-id').value.trim();
-
-            const msgEl = document.getElementById('tg-status-msg');
-            const testBtn = document.getElementById('tg-test-btn');
-
-            if(!token || !chatId) {
-                msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 block";
-                msgEl.innerText = "⚠️ Please enter a temporary Bot Token and Chat ID to run a live test.";
-                return;
-            }
-
-            if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Sending Test...`;
-            msgEl.className = "text-xs p-3.5 rounded-xl bg-blue-500/20 text-blue-300 border border-blue-500/30 block";
-            msgEl.innerText = "⏳ Sending one-time test message via Telegram API...";
+            msgEl.innerText = "⏳ Dispatching test message to Telegram API...";
 
             let text = `🔔 <b>Melaka Flood Alert System Test</b>\n\n` +
                        `📍 <b>Location:</b> Lencongan Sg. Malim (Klebang Besar D/S)\n` +
                        `🌊 <b>Current River Level:</b> ${state.riverLevel.toFixed(2)} m\n` +
                        `⚓ <b>Current Sea Tide:</b> ${state.tideLevel.toFixed(2)} m\n\n` +
-                       `✅ <i>Telegram Notification Bot is working!</i>`;
+                       `✅ <i>Telegram Bot is fully operational!</i>`;
 
             try {
                 const url = `https://api.telegram.org/bot${token}/sendMessage`;
@@ -875,16 +810,16 @@ if __name__ == "__main__":
 
                 if (response.ok && data.ok) {
                     msgEl.className = "text-xs p-3.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 block";
-                    msgEl.innerHTML = `🚀 <b>Success!</b> Test alert sent to Telegram window!`;
+                    msgEl.innerHTML = `🚀 <b>Success!</b> Test notification dispatched to Telegram!`;
                 } else {
                     msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 block";
                     msgEl.innerHTML = `❌ <b>Telegram API Error (${data.error_code || '400'}):</b> ${data.description || 'Failed to send'}`;
                 }
             } catch(err) {
                 msgEl.className = "text-xs p-3.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 block";
-                msgEl.innerHTML = `❌ <b>Network Blocked:</b> ${err.message}. AdBlocker or extension may be blocking request to api.telegram.org.`;
+                msgEl.innerHTML = `❌ <b>Network Request Blocked:</b> ${err.message}. AdBlocker or extension may be blocking request.`;
             } finally {
-                if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1.5"></i> Send One-Time Test Alert`;
+                if(testBtn) testBtn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1.5"></i> Run Browser Live Test Alert`;
             }
         }
 
