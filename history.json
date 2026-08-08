@@ -466,5 +466,11 @@
     "time": "02:03",
     "riverLevel": 0.46,
     "tideLevel": 1.2
+  },
+  {
+    "timestamp": "2026-08-08 03:43:02",
+    "time": "03:43",
+    "riverLevel": 0.45,
+    "tideLevel": 1.2
   }
 ]
